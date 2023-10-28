@@ -1,0 +1,35 @@
+#logo {
+    width: 3.5rem;
+}
+
+.navbar h1 {
+    padding-left: 1em;
+    font-size: 3rem;
+}
+
+#content {
+    background-color: #216C67;
+}
+
+#sidebar {
+    background-color: #FCC0C3;
+}
+
+#sidebar li {
+    color: #316C67;
+}
+
+#sidebar li:hover {
+    background-color: #316C67;
+    border-radius: 3px;
+    color: white;
+}
+#sidebar li:focus {
+    background-color: #316C67;
+    border-radius: 3px;
+    color: white;
+}
+
+#display {
+    background-color: #CAE5E3;
+}
