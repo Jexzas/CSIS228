@@ -31,5 +31,20 @@
 }
 
 #display {
+    padding: 1em;
     background-color: #CAE5E3;
+    display: flex;
+    justify-content: center;
+    vertical-align: middle;
+    text-align: center;
+}
+
+li {
+    font-size: 1.5em;
+}
+
+li:hover {
+    background-color: #216C67;
+    color: white;
+    border-radius: 1em;
 }
