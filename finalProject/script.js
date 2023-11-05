@@ -43,7 +43,37 @@ const reload = () => {
     pages[home].content = createArchive();
     pages[1].content = createForm();
     let currentContent = document.createElement("div");
-    currentContent.innerHTML = pages[activePage].content.outerHTML;
+    if (activePage == 0 || activePage == 1) {
+        currentContent.innerHTML = pages[activePage].content.outerHTML;
+    } else if (pages[activePage].type == "blog") {
+        let title = document.createElement("h1");
+        title.innerHTML = pages[activePage].title;
+        currentContent.appendChild(title);
+        let rank = document.createElement("span");
+        rank.id = "stars";
+        rank.innerHTML = "<h3>Difficulty: </h3>";
+        for (let i = 0; i < pages[activePage].rank; i++) {
+            let star = document.createElement("i");
+            star.classList = "fa-solid fa-star";
+            rank.appendChild(star);
+        }
+        currentContent.appendChild(rank);
+        let ingredientsList = document.createElement("ul");
+        ingredientsList.classList = "list-unstyled";
+        ingredientsList.innerHTML += "<h3><strong>Ingredients:</strong></h3>";
+        for(ingredient of pages[activePage].ingredients) {
+            let currentIng = document.createElement("li");
+            currentIng.innerHTML = ingredient;
+            ingredientsList.appendChild(currentIng);
+        }
+        currentContent.appendChild(ingredientsList);
+        let description = document.createElement("article");
+        let descHeading = document.createElement("h3");
+        descHeading.textContent = "Directions:";
+        description.appendChild(descHeading);
+        description.innerHTML += pages[activePage].content;
+        currentContent.appendChild(description);
+    }
     if (content.hasChildNodes()) {
         content.removeChild(content.firstChild);
     }
@@ -54,6 +84,10 @@ const reload = () => {
 let activePage = 0;
 const recipesLink = document.getElementById("recipesLink");
 const addRecipeLink = document.getElementById("addRecipeLink");
+let pages = [];
+const content = document.getElementById("display");
+
+// Add event listeners for the menu items
 recipesLink.addEventListener("click", () => {
     activePage = 0;
     reload();
@@ -63,18 +97,17 @@ addRecipeLink.addEventListener("click", () => {
     reload();
 })
 
-let pages = [];
-const content = document.getElementById("display");
-// Self explanatory
-
 // Create the static pages
 const createArchive = () => {
     let archive = document.createElement("div");
     archive.classList = "container-fluid text-center";
     let heading = document.createElement("h1");
-    heading.innerHTML = "Home Page (click to view recipe)";
+    heading.innerHTML = "Home Page";
+    let subheading = document.createElement("h3");
+    subheading.textContent = "(click to view recipe)";
     heading.classList = ("text-center");
     archive.appendChild(heading);
+    archive.appendChild(subheading);
     let listArch = document.createElement("ul");
     listArch.classList = "list-unstyled row g-0 col-12";
     for (let page of pages) {
