@@ -170,7 +170,12 @@ const createArchive = () => {
             listArch.appendChild(post);
         }
     }
+    // Check if no posts are found
+    if (listArch.innerHTML == "") {
+        listArch.innerHTML = "Nothing found. Please add recipes"
+    }
     archive.appendChild(listArch);
+   
     return archive;
 }
 
