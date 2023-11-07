@@ -67,6 +67,8 @@ const reload = () => {
 
     // Create the main content div
     let currentContent = document.createElement("div");
+
+    // Decide what kind of page to create
     if (activePage == 0 || activePage == 1) {
         currentContent.innerHTML = pages[activePage].content.outerHTML;
     } else if (pages[activePage].type == "blog") {
@@ -74,39 +76,49 @@ const reload = () => {
         let title = document.createElement("h1");
         title.innerHTML = pages[activePage].title;
         currentContent.appendChild(title);
+
         let rank = document.createElement("span");
         rank.id = "stars";
         rank.innerHTML = "<h3>Difficulty: </h3>";
+
         // Use the rating to add some fontawesome icons
         for (let i = 0; i < pages[activePage].rank; i++) {
             let star = document.createElement("i");
             star.classList = "fa-solid fa-star";
             rank.appendChild(star);
         }
+
         currentContent.appendChild(rank);
+
         // The blog section
         let description = document.createElement("article");
         description.innerHTML += pages[activePage].content;
         currentContent.appendChild(description);
+
         // self explanatory building of the ingredients section
         let ingredientsList = document.createElement("ul");
         ingredientsList.classList = "list-unstyled";
         ingredientsList.innerHTML += "<h3><strong>Ingredients:</strong></h3>";
+
         for(ingredient of pages[activePage].ingredients) {
             let currentIng = document.createElement("li");
             currentIng.innerHTML = ingredient;
             ingredientsList.appendChild(currentIng);
         }
+
         currentContent.appendChild(ingredientsList);
+
         // building the steps section
         let stepsHeading = document.createElement("h4");
         stepsHeading.textContent = "Directions:";
         let stepsList = document.createElement("ol");
+
         for (step of pages[activePage].steps) {
             let currentStep = document.createElement("li");
             currentStep.innerHTML = step;
             stepsList.appendChild(currentStep);
         }
+
         currentContent.appendChild(stepsList);
 
     }
@@ -114,6 +126,7 @@ const reload = () => {
     if (content.hasChildNodes()) {
         content.removeChild(content.firstChild);
     }
+
     content.appendChild(currentContent);
 }
 
@@ -128,6 +141,7 @@ const content = document.getElementById("display");
 const createArchive = () => {
     let archive = document.createElement("div");
     archive.classList = "container-fluid text-center";
+
     let heading = document.createElement("h1");
     heading.innerHTML = "Home Page";
     let subheading = document.createElement("h3");
@@ -135,21 +149,24 @@ const createArchive = () => {
     heading.classList = ("text-center");
     archive.appendChild(heading);
     archive.appendChild(subheading);
+
+    // List all recipes on the homepage        
     let listArch = document.createElement("ul");
     listArch.classList = "list-unstyled row g-0 col-12";
 
-    // List all recipes on the homepage
     for (let page of pages) {
         if (page.type == "blog") {
             let post = document.createElement("li");
             post.innerHTML = `${page.title}`;
             post.id = `post${pages.indexOf(page)}`;
+
             document.addEventListener("click", (e) => {
                 if (e.target.id == post.id) {
                     activePage = pages.indexOf(page);
                     reload();
                 }
             })
+
             listArch.appendChild(post);
         }
     }
@@ -168,19 +185,24 @@ const init = () => {
     // establish my two static pages as first two in pages array
     let home = 0
     let inputPage = 1;
+
     // Add event listeners for the menu items
     recipesLink.addEventListener("click", () => {
         activePage = 0;
         reload();
     })
+
     addRecipeLink.addEventListener("click", () => {
         activePage = 1;
         reload();
     })
+
     content.innerHTML = "";
+    // Check if localstorage has the main object
     !localStorage.main ? localStorage.setItem("main", "") : "";
     let archive = createArchive();
     let formPage = createForm();
+
     // Building the static pages as object literals because they need to not be of type "blog"
     let mainPage = {
         "title": "Home",
@@ -189,6 +211,7 @@ const init = () => {
         "ingredients": [],
         "type": "static"
     }
+
     let addPage = {
         "title": "Add Post",
         "content": formPage.innerHTML,
@@ -196,18 +219,22 @@ const init = () => {
         "ingredients": [],
         "type": "static"
     }
+
     // Empty page array? Create new statics
     if (pages.length == 0) {
         pages.push(mainPage, addPage);
     }
+
     let currentContent = document.createElement("div");
     currentContent.innerHTML = pages[activePage].content;
     content.appendChild(currentContent);
+
     if (localStorage.main != "") {
         pages = (JSON.parse(localStorage.main));
     } else {
         localStorage.setItem("main", JSON.stringify(pages));
     }
+
     reload();
 }
 
@@ -222,12 +249,15 @@ const addPost = (title, content, rank, ingredients, steps) => {
     thisPost.rank = rank;
     thisPost.ingredients = ingredients;
     thisPost.steps = steps;
+
     // Adds post to dynamic storage
     pages.push(thisPost);
+
     // Syncs local storage with dynamic
     localStorage.clear();
     localStorage.setItem("main", JSON.stringify(pages));
     activePage = 1;
+
     reload();
 }
 
@@ -238,11 +268,15 @@ function handleForm() {
         let title = document.getElementById("post-title").value;
         let content = document.getElementById("post-content").value;
         let rank = parseInt(document.getElementById("post-rank").value);
+        
+        // Need to parse the text block given by user into usable array
         let unhandledIngredients = document.getElementById("post-ingredients").value;
         let arrayIngredients = unhandledIngredients.split(",");
         arrayIngredients.forEach((el) => {
             el = el.trim();
         })
+
+        // Same thing but with steps
         let unhandledSteps = document.getElementById("post-steps").value;
         let arraySteps = unhandledSteps.split(",");
         arraySteps.forEach((el) => {
